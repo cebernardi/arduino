@@ -8,26 +8,32 @@ import (
 )
 
 func TestSingleDigitEnhanced_Display(t *testing.T) {
+	blinkSlow := display.SlowBlink
+	blinkFast := display.FastBlink
+	blinkNO := display.NoBlink
 	testCases := []struct {
 		name                string
 		value               int8
 		expectedError       error
-		expectedBlinkStatus display.BlinkStatus
+		expectedBlinkStatus *display.BlinkStatus
 		expectedDigit       *display.Digit
 	}{
 		{
 			name:          "it returns an error if value is less than 0",
 			value:         -1,
+			expectedDigit: &display.Error,
 			expectedError: display.ValueRangeError,
 		},
 		{
 			name:          "it returns an error if value is less than 10",
 			value:         1,
+			expectedDigit: &display.Error,
 			expectedError: display.ValueRangeError,
 		},
 		{
 			name:          "it returns an error if value is more than 29",
 			value:         40,
+			expectedDigit: &display.Error,
 			expectedError: display.ValueRangeError,
 		},
 		{
@@ -36,7 +42,7 @@ func TestSingleDigitEnhanced_Display(t *testing.T) {
 			expectedDigit: &display.Digit{
 				DP: true,
 			},
-			expectedBlinkStatus: display.SlowBlink,
+			expectedBlinkStatus: &blinkNO,
 		},
 		{
 			name:  "it returns correct config if value is 20",
@@ -44,7 +50,7 @@ func TestSingleDigitEnhanced_Display(t *testing.T) {
 			expectedDigit: &display.Digit{
 				DP: true,
 			},
-			expectedBlinkStatus: display.NoBlink,
+			expectedBlinkStatus: &blinkSlow,
 		},
 		{
 			name:  "it returns correct config if value is 30",
@@ -52,7 +58,7 @@ func TestSingleDigitEnhanced_Display(t *testing.T) {
 			expectedDigit: &display.Digit{
 				DP: true,
 			},
-			expectedBlinkStatus: display.FastBlink,
+			expectedBlinkStatus: &blinkFast,
 		},
 	}
 
@@ -61,10 +67,10 @@ func TestSingleDigitEnhanced_Display(t *testing.T) {
 			sd := display.SingleDigitEnhanced{
 				Value: tc.value,
 			}
-			d, err := sd.Display()
+			d, b, err := sd.Display()
 			assert.Equal(t, tc.expectedError, err)
 			assert.Equal(t, tc.expectedDigit, d)
-			assert.Equal(t, tc.expectedBlinkStatus, sd.Blink)
+			assert.Equal(t, tc.expectedBlinkStatus, b)
 		})
 	}
 }

@@ -7,6 +7,13 @@ import (
 var (
 	ValueRangeError      = errors.New("single digit enhanced - value must be between 10 and 39")
 	DigitValueRangeError = errors.New("digit - value must be between 0 and 9")
+	Error                = Digit{
+		A: true,
+		F: true,
+		G: true,
+		E: true,
+		D: true,
+	}
 )
 
 const (
@@ -28,7 +35,6 @@ type BlinkStatus string
 // 21-29 = fast blinking digit
 type SingleDigitEnhanced struct {
 	Value int8
-	Blink BlinkStatus
 }
 
 type Digit struct {
@@ -42,32 +48,33 @@ type Digit struct {
 	DP bool
 }
 
-func (sd *SingleDigitEnhanced) Display() (*Digit, error) {
+func (sd *SingleDigitEnhanced) Display() (*Digit, *BlinkStatus, error) {
 	if sd.Value < 10 {
-		return nil, ValueRangeError
+		return &Error, nil, ValueRangeError
 	}
 
 	if sd.Value > 39 {
-		return nil, ValueRangeError
+		return &Error, nil, ValueRangeError
 	}
 
 	mod := sd.Value % 10
 	d, err := DigitFromValue(mod)
 
 	if err != nil {
-		return nil, err
+		return &Error, nil, err
 	}
 
 	times := sd.Value / int8(10)
+	var blink BlinkStatus
 	if times == 1 {
-		sd.Blink = SlowBlink
+		blink = NoBlink
 	} else if times == 2 {
-		sd.Blink = NoBlink
+		blink = SlowBlink
 	} else if times == 3 {
-		sd.Blink = FastBlink
+		blink = FastBlink
 	}
 
-	return d, nil
+	return d, &blink, nil
 }
 
 func DigitFromValue(value int8) (*Digit, error) {

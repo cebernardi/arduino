@@ -1,0 +1,11 @@
+{
+    "go.gopath": "/usr/local/tinygo:/home/ciccio/go",
+    "go.toolsGopath": "/home/ciccio/go",
+    "go.formatTool": "goimports",
+    "go.useLanguageServer": true,
+    "gopls": {
+        "buildFlags": [
+            "-tags=avr,baremetal,linux,arm,atmega328p,atmega,avr5,arduino,tinygo,gc.conservative,scheduler.none"
+        ],
+    }
+}

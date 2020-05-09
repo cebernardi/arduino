@@ -1,6 +1,6 @@
 package pin
 
-import "github.com/tinygo-org/tinygo/src/machine"
+import "machine"
 
 func AsOutputPins(pins []machine.Pin) {
 	for _, pin := range pins {

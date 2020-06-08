@@ -1,7 +1,6 @@
 {
     "go.gopath": "/usr/local/tinygo:/home/ciccio/go",
     "go.toolsGopath": "/home/ciccio/go",
-    "go.formatTool": "goimports",
     "go.useLanguageServer": true,
     "gopls": {
         "buildFlags": [
